@@ -1,7 +1,6 @@
 // 这是我们的玩家要躲避的敌人
-var rowHeight = 83;
-var colwidth = 101;
-
+//speedUp，表示速度的快慢的倍数
+var rowHeight = 80, colwidth = 100, speedUp = 500;
 var Enemy = function (x, y, speed, sprite) {
     this.x = x;
     this.y = y;
@@ -37,19 +36,20 @@ player.prototype.playerReset = function () {
 }
 // 这个类需要一个 update() 函数， render() 函数和一个 handleInput()函数
 player.prototype.update = function (dt) {
-     var current = this;
+    var current = this;
     allEnemies.forEach(function (element) {
-         if (current.y == element.y) {
-            if (current.x - colwidth < element.x && element.x < current.x + colwidth) {
-                alert("Sorry, you failed!")
+        if (current.y == element.y) {
+            if (element.x < current.x + colwidth && current.x - colwidth < element.x) {
+                alert("Sorry, you failed!");
                 current.playerReset();
                 return;
             }
         }
     })
 
-     if (current.y == 0) {
-        alert("Congratulations, you win");
+    if (current.y == 0) {
+        alert("you win ,The speed will be speeded up ");
+        speedUp += 100; //每当赢一次，速度加快一点
         current.playerReset();
     }
 }
@@ -59,48 +59,49 @@ player.prototype.render = function () {
 }
 
 player.prototype.handleInput = function (code) {
-    switch (code){
+    switch (code) {
         case 'left':
-         if (this.x >= colwidth) {
-            this.x-=colwidth;
-        }
+            if (this.x >= colwidth) {
+                this.x -= colwidth;
+            }
             break;
         case 'up':
-         if (this.y >= rowHeight) {
-            this.y-=rowHeight;
-        }
+            if (this.y >= rowHeight) {
+                this.y -= rowHeight;
+            }
             break;
         case 'right':
-          if (this.x <= colwidth*3) {
-            this.x+=colwidth;
-        }
+            if (this.x <= colwidth * 3) {
+                this.x += colwidth;
+            }
             break;
         case 'down':
-        if (this.y <= rowHeight*4) {
-            this.y+=rowHeight;
-        }
+            if (this.y <= rowHeight * 4) {
+                this.y += rowHeight;
+            }
             break;
     }
 
 }
 
 // 现在实例化你的所有对象
-var enemy1=new Enemy(randomPositionRow(),rowHeight,randomSpeed(),"images/enemy-bug.png");
-var enemy2=new Enemy(randomPositionRow(),rowHeight*2,randomSpeed(),"images/enemy-bug.png");
-var enemy3=new Enemy(randomPositionRow(),rowHeight*3,randomSpeed(),"images/enemy-bug.png");
-var play1=new player(colwidth*2,rowHeight*4,"images/char-boy.png");
+var enemy1 = new Enemy(randomPositionRow(), rowHeight, randomSpeed(), "images/enemy-bug.png");
+var enemy2 = new Enemy(randomPositionRow(), rowHeight * 2, randomSpeed(), "images/enemy-bug.png");
+var enemy3 = new Enemy(randomPositionRow(), rowHeight * 3, randomSpeed(), "images/enemy-bug.png");
+var play1 = new player(colwidth * 2, rowHeight * 4, "images/char-boy.png");
 // 把所有敌人的对象都放进一个叫 allEnemies 的数组里面
-var allEnemies=[];
-allEnemies.push(enemy1,enemy2,enemy3);
+var allEnemies = [enemy1, enemy2, enemy3];
 // 把玩家对象放进一个叫 player 的变量里面
-var player=play1;
+var player = play1;
 
 //敌人随机位置
-function randomPositionRow(){
-    return Math.floor(Math.random()*(colwidth*2)-colwidth*5); //有问题???????
+function randomPositionRow() {
+    return Math.floor(Math.random() * -300);
 }
-function randomSpeed(){
-    return Math.floor(Math.random()*(colwidth*3)+colwidth/2);//有问题???????
+
+//敌人随机速度
+function randomSpeed() {
+    return Math.round(Math.random() * speedUp);
 }
 
 // 这段代码监听游戏玩家的键盘点击事件并且代表将按键的关键数字送到 Play.handleInput()
